@@ -1,6 +1,7 @@
 {
   "name": "nodejs-course",
   "version": "1.0.0",
+  "type": "module",
   "description": "Exploring NodeJS, the JavaScript runtime environment.",
   "main": "test.js",
   "scripts": {
