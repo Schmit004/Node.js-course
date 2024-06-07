@@ -216,3 +216,83 @@ undefined
 Если, после ввода фигурной скобки, нажать на клавишу Enter, REPL перейдёт на новую строку, приглашение в которой будет выглядеть как три точки.
 
 Режим REPL — полезная возможность Node.js, но область её применения ограничена небольшими экспериментами.
+
+---
+
+### Система импорта и экспорта
+
+Система импорта и экспорта в Node.js основывается на двух основных механизмах: CommonJS и ES Modules (ESM). Оба этих подхода позволяют организовать код в модули, которые могут экспортировать и импортировать функциональность друг из друга, но они делают это по-разному.
+
+#### CommonJS
+
+CommonJS — это стандарт, который первоначально использовался в Node.js для организации кода в модули. В системе CommonJS каждый файл считается модулем, и у него есть свой собственный контекст исполнения. Это означает, что переменные, объявленные в файле-модуле, не становятся глобальными.
+
+**Экспорт** в CommonJS:
+
+```javascript
+// myModule.js
+const myFunction = () => {
+  console.log('Hello, World!');
+};
+
+module.exports = myFunction;
+```
+
+**Импорт** в CommonJS:
+
+```javascript
+// anotherFile.js
+const myFunction = require('./myModule');
+
+myFunction(); // Выводит: 'Hello, World!'
+```
+
+В CommonJS для экспорта используется объект `module.exports`, а для импорта функция `require()`.
+
+#### ES Modules (ESM)
+
+ES Modules — это стандарт ECMAScript для работы с модулями. Node.js начал поддерживать ESM начиная с версии 12, хотя для полной поддержки требуется указать `"type": "module"` в файле `package.json` или использовать расширение файла `.mjs`.
+
+**Экспорт** в ESM:
+
+```javascript
+// myModule.js
+export const myFunction = () => {
+  console.log('Hello, World!');
+};
+```
+
+Или экспорт по умолчанию:
+
+```javascript
+// myModule.js
+const myFunction = () => {
+  console.log('Hello, World!');
+};
+
+export default myFunction;
+```
+
+**Импорт** в ESM:
+
+```javascript
+// anotherFile.js
+import { myFunction } from './myModule.js';
+
+myFunction(); // Выводит: 'Hello, World!'
+```
+
+Или при импорте значения по умолчанию:
+
+```javascript
+// anotherFile.js
+import myFunction from './myModule.js';
+
+myFunction(); // Выводит: 'Hello, World!'
+```
+
+В ESM для экспорта и импорта используются ключевые слова `export` и `import` соответственно.
+
+#### Выбор между CommonJS и ESM
+
+Выбор между CommonJS и ESM зависит от многих факторов, включая личные предпочтения, требования проекта и совместимость с используемыми библиотеками и инструментами. ESM становится все более популярным и является стандартом ECMAScript, но CommonJS по-прежнему широко используется во многих проектах и библиотеках.
