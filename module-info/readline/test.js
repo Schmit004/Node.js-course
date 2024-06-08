@@ -23,7 +23,7 @@ console.log('\x1b[1m\x1b[32m\x1b[44m%s\x1b[0m', 'Please enter some text (type "e
   \x1b[0m - сброс всех стилей (последующий текст будет стандартного вида)
 */
 
-// Пример использования встроенной библиотеки readline
+// Пример использования встроенного модуля readline
 
 const rl = readline.createInterface({
   input: process.stdin,
