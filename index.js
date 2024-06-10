@@ -1,5 +1,5 @@
-import { getFullPath, changeExtension } from './libs/path-lib/test.js';
-import { readDirectory, renameFile } from './libs/fs-lib/test.js';
+import { getFullPath, changeExtension } from './module-info/path/test.js';
+import { readDirectory, renameFile } from './module-info/fs/test.js';
 
 // Простая проверка на выполнение JS кода
 const sum = 1 + 5;
@@ -9,7 +9,6 @@ console.log(`Вывод в консоль значения переменной 
 async function changeFileExtensions(dir, newExt) {
   try {
     const entries = await readDirectory(dir);
-    console.log('Директория - ', entries);
 
     for (let entry of entries) {
       const fullPath = getFullPath(dir, entry.name);
@@ -34,7 +33,7 @@ async function changeFileExtensions(dir, newExt) {
 }
 
 // Пример использования
-const targetDirectory = './libs';
+const targetDirectory = './module-info';
 const newExtension = '.md';
 
 changeFileExtensions(targetDirectory, newExtension)

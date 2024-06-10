@@ -1,0 +1,2 @@
+Hello from fs-module (Node.js)
+Testing writeFile/appendFile method
