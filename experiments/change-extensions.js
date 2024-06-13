@@ -1,5 +1,5 @@
-import { getFullPath, changeExtension } from './module-info/path/test.js';
-import { readDirectory, renameFile } from './module-info/fs/test.js';
+import { getFullPath, changeExtension } from '../module-info/path/test.js';
+import { readDirectory, renameFile } from '../module-info/fs/test.js';
 
 // Замена расширения у файлов в заданной директории
 export async function changeFileExtensions(dir, newExt) {

@@ -50,7 +50,7 @@ export async function readDirectory(directory) {
 }
 
 // Запись в файл
-async function writeToFile(directory, filename, content, overwrite = true) {
+export async function writeToFile(directory, filename, content, overwrite = true) {
   try {
     const filePath = path.join(directory, filename);
 
@@ -64,19 +64,19 @@ async function writeToFile(directory, filename, content, overwrite = true) {
       console.log(`New content has been appended to file ${filename}.`);
     }
   } catch (err) {
-    console.error(`Error writing to file: ${err}`);
+    console.error(`Error writing to file:\n${err}`);
   }
 }
 
 // Чтение содержимого файла
-async function readFileContent(directory, filename) {
+export async function readFileContent(directory, filename) {
   try {
     const filePath = path.join(directory, filename);
     const data = await fs.readFile(filePath, 'utf-8');
-    console.log(`File content of ${filePath}:\n`, data);
+    console.log(`File content of ${filePath}:\n${data}`);
     return data;
   } catch (error) {
-    console.error(`Error reading file ${filePath}:`, error);
+    console.error(`Error reading file ${filePath}:\n${error}`);
     throw error;
   }
 }
@@ -101,10 +101,6 @@ const expectedFilePath = path.resolve(process.cwd(), 'module-info/fs/test.js');
 
 if (normalizedFilePath === expectedFilePath) {
   (async () => {
-    await createDirectory(NEW_DIRECTORY);
-    await createFile(NEW_DIRECTORY, NEW_FILE, CONTENT);
-    await readDirectory(NEW_DIRECTORY);
-    await writeToFile(NEW_DIRECTORY, NEW_FILE, NEW_CONTENT, false);
     await readFileContent(NEW_DIRECTORY, NEW_FILE);
   })();
 }
