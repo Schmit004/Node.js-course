@@ -1,41 +1,16 @@
-import { getFullPath, changeExtension } from './module-info/path/test.js';
-import { readDirectory, renameFile } from './module-info/fs/test.js';
+import { changeFileExtensions } from "./experiments/change-extensions";
 
-// Простая проверка на выполнение JS кода
+// Проверка на выполнение JS кода
 const sum = 1 + 5;
 console.log(`Вывод в консоль значения переменной sum: ${sum}`);
 
-// Замена расширения у файлов в заданной директории
-async function changeFileExtensions(dir, newExt) {
-  try {
-    const entries = await readDirectory(dir);
+// Получение аргументов командной строки
+const args = process.argv.slice(2);
 
-    for (let entry of entries) {
-      const fullPath = getFullPath(dir, entry.name);
-      console.log('Полный путь - ', fullPath);
+// Пример замены расширения файлов в указанной директории
+const TARGET_DIRECTORY = './module-info';
+const NEW_EXTENSION = '.ts';
 
-      if (entry.isDirectory()) {
-        // Рекурсивно обрабатываем поддиректорию
-        await changeFileExtensions(fullPath, newExt);
-      } else if (entry.isFile()) {
-        // Переименовываем файл
-        const newFileName = changeExtension(entry.name, newExt);
-        if (newFileName !== entry.name) {
-          const newFullPath = getFullPath(dir, newFileName);
-          await renameFile(fullPath, newFullPath);
-          console.log(`Renamed: ${fullPath} -> ${newFullPath}`);
-        }
-      }
-    }
-  } catch (err) {
-    console.error(`Error processing directory ${dir}:`, err);
-  }
+if (args.includes('changeExt')) {
+  await changeFileExtensions(TARGET_DIRECTORY, NEW_EXTENSION);
 }
-
-// Пример использования
-const targetDirectory = './module-info';
-const newExtension = '.md';
-
-changeFileExtensions(targetDirectory, newExtension)
-  .then(() => console.log('All files processed'))
-  .catch(err => console.error('Error:', err));
