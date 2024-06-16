@@ -1,7 +1,7 @@
 import path from 'path';
 
-export function getFullPath(dir, fileName) {
-  return path.join(dir, fileName);
+export function getFullPath(directory, fileName) {
+  return path.join(directory, fileName);
 }
 
 export function changeExtension(fileName, newExt) {

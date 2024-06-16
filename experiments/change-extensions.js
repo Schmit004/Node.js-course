@@ -7,23 +7,22 @@ export async function changeFileExtensions(dir, newExt) {
     const entries = await readDirectory(dir);
 
     for (let entry of entries) {
-      const fullPath = getFullPath(dir, entry.name);
-      console.log('Полный путь - ', fullPath);
+      const oldFileName = entry.name;
+      const fullPath = getFullPath(dir, oldFileName);
 
-      if (entry.isDirectory()) {
+      if (entry.isDirectory) {
         // Рекурсивно обрабатываем поддиректорию
         await changeFileExtensions(fullPath, newExt);
-      } else if (entry.isFile()) {
-        // Переименовываем файл
-        const newFileName = changeExtension(entry.name, newExt);
-        if (newFileName !== entry.name) {
+      } else if (entry.isFile) {
+        const newFileName = changeExtension(oldFileName, newExt);
+
+        if (newFileName !== oldFileName) {
           const newFullPath = getFullPath(dir, newFileName);
           await renameFile(fullPath, newFullPath);
-          console.log(`Renamed: ${fullPath} -> ${newFullPath}`);
         }
       }
     }
   } catch (err) {
-    console.error(`Error processing directory ${dir}:`, err);
+    console.error(`Error processing directory ${dir}:\n${err}`);
   }
 }

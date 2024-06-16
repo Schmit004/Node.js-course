@@ -1,35 +1,29 @@
 import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Примеры использования
-const NEW_DIRECTORY = './module-info/fs/exampleDir';
-const NEW_FILE = 'example.txt';
-const CONTENT = 'Hello from fs-module (Node.js)\n';
-const NEW_CONTENT = 'Testing writeFile/appendFile method\n';
+import { getFullPath } from '../path/test.js';
+import chalk from 'chalk';
 
 // Создание директории
-async function createDirectory(newDirectory) {
+export async function createDirectory(newDirectory) {
   try {
     await fs.mkdir(newDirectory, { recursive: true });
     console.log(`Directory created successfully at ${newDirectory}`);
   } catch (err) {
-    console.error(`Error creating directory: ${err}`);
+    console.error(`Error creating directory:\n${err}`);
   }
 }
 
 // Создание файла
-async function createFile(directory, filename, content = '') {
+export async function createFile(directory, filename, content = '') {
   try {
     if (!directory || !filename) {
       throw new Error('Directory and filename are required');
     }
 
-    const filePath = path.join(directory, filename);
+    const filePath = getFullPath(directory, filename);
     await fs.writeFile(filePath, content, { encoding: 'utf-8' });
     console.log(`File created successfully at ${filePath}`);
   } catch (err) {
-    console.error(`Error creating file: ${err}`);
+    console.error(`Error creating file:\n${err}`);
   }
 }
 
@@ -45,14 +39,14 @@ export async function readDirectory(directory) {
     console.log(`Contents of directory ${directory}:`, result);
     return result;
   } catch (err) {
-    console.error(`Error reading directory: ${err}`);
+    console.error(`Error reading directory:\n${err}`);
   }
 }
 
 // Запись в файл
 export async function writeToFile(directory, filename, content, overwrite = true) {
   try {
-    const filePath = path.join(directory, filename);
+    const filePath = getFullPath(directory, filename);
 
     if (overwrite) {
       // Перезаписываем содержимое файла
@@ -71,36 +65,22 @@ export async function writeToFile(directory, filename, content, overwrite = true
 // Чтение содержимого файла
 export async function readFileContent(directory, filename) {
   try {
-    const filePath = path.join(directory, filename);
+    const filePath = getFullPath(directory, filename);
     const data = await fs.readFile(filePath, 'utf-8');
-    console.log(`File content of ${filePath}:\n${data}`);
+    console.log(chalk.bold('File content of ' + `${filePath}:\n`) + chalk.italic.blue(`${data}`));
     return data;
-  } catch (error) {
-    console.error(`Error reading file ${filePath}:\n${error}`);
-    throw error;
+  } catch (err) {
+    console.error(`Error reading file ${filePath}:\n${err}`);
+    throw err;
   }
 }
 
 // Переименование файла
-export async function renameFile(directory, oldFilename, newFilename) {
+export async function renameFile(oldFilePath, newFilePath) {
   try {
-    const oldFilePath = path.join(directory, oldFilename);
-    const newFilePath = path.join(directory, newFilename);
-
     await fs.rename(oldFilePath, newFilePath);
-    console.log(`File renamed from ${oldFilename} to ${newFilename}`);
+    console.log(chalk.bold(`File renamed from ${oldFilePath} to ${newFilePath}`));
   } catch (err) {
-    console.error(`Error renaming file: ${err}`);
+    console.error(`Error renaming file:\n${err}`);
   }
-}
-
-// Вызов функций только при прямом запуске файла
-const currentFilePath = fileURLToPath(import.meta.url);
-const normalizedFilePath = path.normalize(currentFilePath);
-const expectedFilePath = path.resolve(process.cwd(), 'module-info/fs/test.js');
-
-if (normalizedFilePath === expectedFilePath) {
-  (async () => {
-    await readFileContent(NEW_DIRECTORY, NEW_FILE);
-  })();
 }
