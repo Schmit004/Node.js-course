@@ -4,7 +4,8 @@ import fs from 'fs';
 // Чтение файла в буфер
 fs.readFile('./libs/buffer-lib/text.txt', (err, data) => {
   if (err) throw err;
-  console.log('data from txt file - ', data.toString('utf-8')); // data - это буфер
+  // data - это буфер, который содержит бинарные данные файла
+  console.log('data from txt file - ', data.toString('utf-8'));
 });
 
 // Запись буфера в файл
