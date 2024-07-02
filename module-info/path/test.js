@@ -4,6 +4,10 @@ export function getFullPath(directory, fileName) {
   return path.join(directory, fileName);
 }
 
+export function getCurrentDirectory() {
+  return path.resolve();
+}
+
 export function changeExtension(fileName, newExt) {
   // Регулярное выражение для проверки, имеет ли файл только одно расширение и совпадает ли оно с новым
   const singleExtRegex = new RegExp(`^[^.]+\\${newExt}$`);

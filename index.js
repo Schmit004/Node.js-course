@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { createEmptyBuffer, createBufferFromArray, createBufferFromString } from './module-info/buffer/create.js';
 import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
+import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 
 // Проверка на выполнение JS кода
 const sum = 1 + 5;
@@ -34,6 +35,13 @@ if (args.includes('fs')) {
 
 if (args.includes('fsOpen')) {
   await openFile(`${NEW_DIRECTORY}/${NEW_FILE}`);
+}
+
+// 10. Изучение встроенного модуля path
+if (args.includes('path')) {
+  const currentDirectory = getCurrentDirectory();
+  const fullPath = getFullPath(currentDirectory, 'experiments/excel-sheets.js');
+  console.log(chalk.bold('Полный путь до указанного файла: ') + chalk.italic.yellow(`${fullPath}`));
 }
 
 // Замена расширения файлов в указанной директории
