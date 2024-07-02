@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { createEmptyBuffer, createBufferFromArray, createBufferFromString } from './module-info/buffer/create.js';
+import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
 
 // Проверка на выполнение JS кода
@@ -29,6 +30,10 @@ if (args.includes('fs')) {
   await readDirectory(NEW_DIRECTORY);
   await writeToFile(NEW_DIRECTORY, NEW_FILE, NEW_CONTENT, false);
   await readFileContent(NEW_DIRECTORY, NEW_FILE);
+}
+
+if (args.includes('fsOpen')) {
+  await openFile(`${NEW_DIRECTORY}/${NEW_FILE}`);
 }
 
 // Замена расширения файлов в указанной директории

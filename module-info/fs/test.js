@@ -84,3 +84,41 @@ export async function renameFile(oldFilePath, newFilePath) {
     console.error(`Error renaming file:\n${err}`);
   }
 }
+
+// Открытие файла для чтения и записи
+export async function openFile(filePath) {
+  let fd;
+  try {
+    // Открытие файла для чтения и записи
+    fd = await fs.open(filePath, 'r+');
+
+    // Создание буфера для хранения прочитанных данных
+    const buffer = Buffer.alloc(1024);
+
+    // Чтение данных из файла
+    const { bytesRead } = await fd.read(buffer, 0, buffer.length, 0);
+    console.log(`Прочитано байт: ${bytesRead}`);
+    console.log(`Данные: ${buffer.toString('utf-8', 0, bytesRead)}`);
+
+    // Запись данных в файл
+    const newData = 'Some new data';
+    const { bytesWritten } = await fd.write(newData, 0, newData.length, null);
+    console.log(`Записано байт: ${bytesWritten}`);
+    console.log(`Записанные данные: ${newData}`);
+
+    // Синхронизация файла с диском
+    await fd.sync();
+    console.log('Файл успешно синхронизирован с диском.');
+  } catch (err) {
+    console.error(`Ошибка: ${err.message}`);
+  } finally {
+    // Закрытие файла
+    if (fd) {
+      try {
+        await fd.close();
+      } catch (err) {
+        console.error(`Ошибка при закрытии файла: ${err.message}`);
+      }
+    }
+  }
+}
