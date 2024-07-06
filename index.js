@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { createEmptyBuffer, createBufferFromArray, createBufferFromString } from './module-info/buffer/create.js';
 import { hashData, encryptData, decryptData, generateRSAKeyPair, signData, verifySignature } from './module-info/crypto/test.js';
+import { createUDPClient, createUDPServer } from './module-info/dgram/test.js';
 import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
@@ -8,6 +9,17 @@ import { config } from './env/config.js';
 
 // Получение аргументов командной строки
 const args = process.argv.slice(2);
+
+if (!args.length) {
+  console.log(chalk.bold('Передайте один из следующих аргументов для тестирования возможностей встроенных модулей:'));
+  console.log(chalk.bgBlue.white(`
+    - createBuf: тестирование возможностей модуля buffer;
+    - crypto: тестирование возможностей модуля crypto;
+    - dgram: тестирование возможностей модуля dgram;
+    - fs | fsOpen: тестирование возможностей модуля fs;
+    - path: тестирование возможностей модуля path.`
+  ))
+}
 
 // 1. Изучение встроенного модуля buffer
 // Создание буферов
@@ -18,15 +30,15 @@ if (args.includes('createBuf')) {
 }
 
 // 2. Изучение встроенного модуля crypto
-const DATA = 'Изучение встроенного модуля crypto';
-const ALGORITHM = 'sha256';
-const ENCODING = 'hex';
-const SECRET = config.secret;
-const PASSPHRASE = config.passphrase;
-const MODULUS_LENGTH = 4096;
-const PUBLIC_EXPONENT = 0x10001
-
 if (args.includes('crypto')) {
+  const DATA = 'Изучение встроенного модуля crypto';
+  const ALGORITHM = 'sha256';
+  const ENCODING = 'hex';
+  const SECRET = config.secret;
+  const PASSPHRASE = config.passphrase;
+  const MODULUS_LENGTH = 4096;
+  const PUBLIC_EXPONENT = 0x10001
+
   const hashedData = hashData(DATA, ALGORITHM, ENCODING);
   console.log(chalk.bold('Хешированные данные: ') + chalk.italic.blue(`${hashedData}`));
 
@@ -47,13 +59,23 @@ if (args.includes('crypto')) {
   console.log(chalk.bold('Подпись валидная: ') + chalk.italic.blue(`${isValid}`));
 }
 
-// 6. Изучение встроенного модуля fs
-const NEW_DIRECTORY = './module-info/fs/exampleDir';
-const NEW_FILE = 'example.txt';
-const CONTENT = 'Hello from fs-module (Node.js)\n';
-const NEW_CONTENT = 'Testing writeFile/appendFile method\n';
+// 3. Изучение встроенного модуля dgram
+if (args.includes('dgram')) {
+  const UDP_HOST = config.udpHost;
+  const UDP_PORT = config.udpPort;
+  const MESSAGE = Buffer.from('Hello, UDP server!');
 
+  createUDPServer(UDP_PORT);
+  createUDPClient(MESSAGE, UDP_PORT, UDP_HOST);
+}
+
+// 6. Изучение встроенного модуля fs
 if (args.includes('fs')) {
+  const NEW_DIRECTORY = './module-info/fs/exampleDir';
+  const NEW_FILE = 'example.txt';
+  const CONTENT = 'Hello from fs-module (Node.js)\n';
+  const NEW_CONTENT = 'Testing writeFile/appendFile method\n';
+
   await createDirectory(NEW_DIRECTORY);
   await createFile(NEW_DIRECTORY, NEW_FILE, CONTENT);
   await readDirectory(NEW_DIRECTORY);
@@ -69,13 +91,14 @@ if (args.includes('fsOpen')) {
 if (args.includes('path')) {
   const currentDirectory = getCurrentDirectory();
   const fullPath = getFullPath(currentDirectory, 'experiments/excel-sheets.js');
+
   console.log(chalk.bold('Полный путь до указанного файла: ') + chalk.italic.yellow(`${fullPath}`));
 }
 
 // Замена расширения файлов в указанной директории
-const TARGET_DIRECTORY = './env';
-const NEW_EXTENSION = '.ts';
-
 if (args.includes('changeExt')) {
+  const TARGET_DIRECTORY = './env';
+  const NEW_EXTENSION = '.ts';
+
   await changeFileExtensions(TARGET_DIRECTORY, NEW_EXTENSION);
 }
