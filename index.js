@@ -6,6 +6,7 @@ import { createDirectory, createFile, readDirectory, writeToFile, readFileConten
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
 import { config } from './env/config.js';
+import { resolveDomain1, resolveDomain2, resolveMxRecords, resolveTxtRecords, resolveWithCustomServers, reverseLookup } from './module-info/dns/test.js';
 
 // Получение аргументов командной строки
 const args = process.argv.slice(2);
@@ -16,6 +17,7 @@ if (!args.length) {
     - createBuf: тестирование возможностей модуля buffer;
     - crypto: тестирование возможностей модуля crypto;
     - dgram: тестирование возможностей модуля dgram;
+    - dns: тестирование возможностей модуля dns;
     - fs | fsOpen: тестирование возможностей модуля fs;
     - path: тестирование возможностей модуля path.`
   ))
@@ -67,6 +69,20 @@ if (args.includes('dgram')) {
 
   createUDPServer(UDP_PORT);
   createUDPClient(MESSAGE, UDP_PORT, UDP_HOST);
+}
+
+// 4. Изучение встроенного модуля buffer
+if (args.includes('dns')) {
+  const DOMAIN = 'google.com';
+  const IP = '8.8.8.8';
+  const SERVERS = ['8.8.8.8', '8.8.4.4'];
+
+  await resolveDomain1(DOMAIN);
+  resolveDomain2(DOMAIN);
+  reverseLookup(IP);
+  resolveMxRecords(DOMAIN);
+  resolveTxtRecords(DOMAIN);
+  resolveWithCustomServers(DOMAIN, SERVERS);
 }
 
 // 6. Изучение встроенного модуля fs
