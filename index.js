@@ -2,11 +2,12 @@ import chalk from 'chalk';
 import { createEmptyBuffer, createBufferFromArray, createBufferFromString } from './module-info/buffer/create.js';
 import { hashData, encryptData, decryptData, generateRSAKeyPair, signData, verifySignature } from './module-info/crypto/test.js';
 import { createUDPClient, createUDPServer } from './module-info/dgram/test.js';
+import { resolveDomain1, resolveDomain2, resolveMxRecords, resolveTxtRecords, resolveWithCustomServers, reverseLookup } from './module-info/dns/test.js';
+import { registerEventListener, triggerEvent, removeEventListener } from './module-info/events/test.js';
 import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
 import { config } from './env/config.js';
-import { resolveDomain1, resolveDomain2, resolveMxRecords, resolveTxtRecords, resolveWithCustomServers, reverseLookup } from './module-info/dns/test.js';
 
 // Получение аргументов командной строки
 const args = process.argv.slice(2);
@@ -18,9 +19,11 @@ if (!args.length) {
     - crypto: тестирование возможностей модуля crypto;
     - dgram: тестирование возможностей модуля dgram;
     - dns: тестирование возможностей модуля dns;
+    - events: тестирование возможностей модуля events;
     - fs | fsOpen: тестирование возможностей модуля fs;
-    - path: тестирование возможностей модуля path.`
+    - path: тестирование возможностей модуля path.\n`
   ))
+  console.log(chalk.bold('Например: node index.js events'));
 }
 
 // 1. Изучение встроенного модуля buffer
@@ -71,7 +74,7 @@ if (args.includes('dgram')) {
   createUDPClient(MESSAGE, UDP_PORT, UDP_HOST);
 }
 
-// 4. Изучение встроенного модуля buffer
+// 4. Изучение встроенного модуля dns
 if (args.includes('dns')) {
   const DOMAIN = 'google.com';
   const IP = '8.8.8.8';
@@ -83,6 +86,36 @@ if (args.includes('dns')) {
   resolveMxRecords(DOMAIN);
   resolveTxtRecords(DOMAIN);
   resolveWithCustomServers(DOMAIN, SERVERS);
+}
+
+// 3. Изучение встроенного модуля events
+if (args.includes('events')) {
+  const BASIC_EVENT = 'event';
+  const DATA_EVENT = 'data';
+  const MESSAGE = 'Hello from events module'
+
+  // Функция-слушатель для события event
+  function responseToEvent() {
+    console.log(chalk.bold.green('An event occurred!'));
+  }
+
+  // Функция-слушатель для события data
+  function responseToData(message) {
+    if (!message) {
+      console.error(chalk.bold.red('No message data provided'));
+      return;
+    }
+    console.log(chalk.bold('Received message: ') + chalk.italic.yellow(`${message}`));
+  }
+
+  registerEventListener(BASIC_EVENT, responseToEvent);
+  registerEventListener(BASIC_EVENT, responseToEvent); // проверка на дублирования
+  registerEventListener(DATA_EVENT, responseToData);
+  triggerEvent(BASIC_EVENT);
+  triggerEvent(DATA_EVENT); // проверка на отсутствие данных
+  triggerEvent(DATA_EVENT, MESSAGE);
+  removeEventListener(BASIC_EVENT, responseToData); // проверка на незарегистрированного слушателя
+  removeEventListener(BASIC_EVENT, responseToEvent);
 }
 
 // 6. Изучение встроенного модуля fs
