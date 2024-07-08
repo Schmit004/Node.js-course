@@ -5,6 +5,7 @@ import { createUDPClient, createUDPServer } from './module-info/dgram/test.js';
 import { resolveDomain1, resolveDomain2, resolveMxRecords, resolveTxtRecords, resolveWithCustomServers, reverseLookup } from './module-info/dns/test.js';
 import { registerEventListener, triggerEvent, removeEventListener } from './module-info/events/test.js';
 import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
+import { createRouteHandlingServer, createHttpClient } from './module-info/http/test.js';
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
 import { config } from './env/config.js';
@@ -21,6 +22,7 @@ if (!args.length) {
     - dns: тестирование возможностей модуля dns;
     - events: тестирование возможностей модуля events;
     - fs | fsOpen: тестирование возможностей модуля fs;
+    - fttp: тестирование возможностей модуля http;
     - path: тестирование возможностей модуля path.\n`
   ))
   console.log(chalk.bold('Например: node index.js events'));
@@ -134,6 +136,29 @@ if (args.includes('fs')) {
 
 if (args.includes('fsOpen')) {
   await openFile(`${NEW_DIRECTORY}/${NEW_FILE}`);
+}
+
+// 3. Изучение встроенного модуля http
+if (args.includes('http')) {
+  const HOST = config.host;
+  const PORT = config.port;
+  const OPTIONS = {
+    hostname: HOST,
+    port: PORT,
+    path: '/about'
+  };
+
+  function handleResponse(error, data) {
+    if (error) {
+      console.error(chalk.bold.red(`Произошла ошибка при выполнении запроса: ${error.message}`));
+    } else {
+      console.log(chalk.bold('Полученные данные: ') + chalk.italic.blue(`${data}`));
+      // Дополнительная логики обработки данных
+    }
+  }
+
+  createRouteHandlingServer(PORT, HOST);
+  createHttpClient(OPTIONS, handleResponse);
 }
 
 // 10. Изучение встроенного модуля path
