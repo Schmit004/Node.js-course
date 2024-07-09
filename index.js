@@ -6,9 +6,11 @@ import { resolveDomain1, resolveDomain2, resolveMxRecords, resolveTxtRecords, re
 import { registerEventListener, triggerEvent, removeEventListener } from './module-info/events/test.js';
 import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
 import { createRouteHandlingServer, createHttpClient } from './module-info/http/test.js';
+import { createTCPServer, createTCPClient } from './module-info/net/test.js';
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
 import { config } from './env/config.js';
+import { directoryInfo, loadInfo, memoryInfo, networkInfo, systemInfo } from './module-info/os/test.js';
 
 // Получение аргументов командной строки
 const args = process.argv.slice(2);
@@ -22,7 +24,9 @@ if (!args.length) {
     - dns: тестирование возможностей модуля dns;
     - events: тестирование возможностей модуля events;
     - fs | fsOpen: тестирование возможностей модуля fs;
-    - fttp: тестирование возможностей модуля http;
+    - http: тестирование возможностей модуля http;
+    - net: тестирование возможностей модуля net;
+    - os: тестирование возможностей модуля os;
     - path: тестирование возможностей модуля path.\n`
   ))
   console.log(chalk.bold('Например: node index.js events'));
@@ -138,7 +142,7 @@ if (args.includes('fsOpen')) {
   await openFile(`${NEW_DIRECTORY}/${NEW_FILE}`);
 }
 
-// 3. Изучение встроенного модуля http
+// 7. Изучение встроенного модуля http
 if (args.includes('http')) {
   const HOST = config.host;
   const PORT = config.port;
@@ -159,6 +163,25 @@ if (args.includes('http')) {
 
   createRouteHandlingServer(PORT, HOST);
   createHttpClient(OPTIONS, handleResponse);
+}
+
+// 8. Изучение встроенного модуля net
+if (args.includes('net')) {
+  createTCPServer();
+
+  setTimeout(() => {
+    // Запуск TCP клиента
+    createTCPClient();
+  }, 1000);
+}
+
+// 9. Изучение встроенного модуля os
+if (args.includes('os')) {
+  systemInfo();
+  networkInfo();
+  memoryInfo();
+  loadInfo();
+  directoryInfo();
 }
 
 // 10. Изучение встроенного модуля path
