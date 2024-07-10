@@ -7,10 +7,11 @@ import { registerEventListener, triggerEvent, removeEventListener } from './modu
 import { createDirectory, createFile, readDirectory, writeToFile, readFileContent, openFile } from './module-info/fs/test.js';
 import { createRouteHandlingServer, createHttpClient } from './module-info/http/test.js';
 import { createTCPServer, createTCPClient } from './module-info/net/test.js';
+import { directoryInfo, loadInfo, memoryInfo, networkInfo, systemInfo } from './module-info/os/test.js';
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
+import { askUserName, handleLineInput, handleStandardInput, readFileLineByLine } from './module-info/readline/test.js';
 import { changeFileExtensions } from "./experiments/change-extensions.js";
 import { config } from './env/config.js';
-import { directoryInfo, loadInfo, memoryInfo, networkInfo, systemInfo } from './module-info/os/test.js';
 
 // Получение аргументов командной строки
 const args = process.argv.slice(2);
@@ -27,7 +28,8 @@ if (!args.length) {
     - http: тестирование возможностей модуля http;
     - net: тестирование возможностей модуля net;
     - os: тестирование возможностей модуля os;
-    - path: тестирование возможностей модуля path.\n`
+    - path: тестирование возможностей модуля path.
+    - readline: тестирование возможностей модуля readline.\n`
   ))
   console.log(chalk.bold('Например: node index.js events'));
 }
@@ -190,6 +192,16 @@ if (args.includes('path')) {
   const fullPath = getFullPath(currentDirectory, 'experiments/excel-sheets.js');
 
   console.log(chalk.bold('Полный путь до указанного файла: ') + chalk.italic.yellow(`${fullPath}`));
+}
+
+// 11. Изучение встроенного модуля readline
+if (args.includes('readline')) {
+  const FILENAME = '.env';
+
+  handleStandardInput();
+  askUserName();
+  handleLineInput();
+  readFileLineByLine(FILENAME);
 }
 
 // Замена расширения файлов в указанной директории
