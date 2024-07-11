@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from 'chalk';
 
 export function createEmptyBuffer(size = 10) { // По умолчанию создастся буфер на 10 байт
   const buf = Buffer.alloc(size);

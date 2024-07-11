@@ -10,7 +10,8 @@ import { createTCPServer, createTCPClient } from './module-info/net/test.js';
 import { directoryInfo, loadInfo, memoryInfo, networkInfo, systemInfo } from './module-info/os/test.js';
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { askUserName, handleLineInput, handleStandardInput, readFileLineByLine } from './module-info/readline/test.js';
-import { changeFileExtensions } from "./experiments/change-extensions.js";
+import { compressAndWriteToFile, readStreamFromFile, usePipelineForReadWrite, useTransformStream } from './module-info/stream/test.js';
+import { changeFileExtensions } from './experiments/change-extensions.js';
 import { config } from './env/config.js';
 
 // Получение аргументов командной строки
@@ -29,7 +30,8 @@ if (!args.length) {
     - net: тестирование возможностей модуля net;
     - os: тестирование возможностей модуля os;
     - path: тестирование возможностей модуля path.
-    - readline: тестирование возможностей модуля readline.\n`
+    - readline: тестирование возможностей модуля readline.
+    - stream: тестирование возможностей модуля stream.\n`
   ))
   console.log(chalk.bold('Например: node index.js events'));
 }
@@ -202,6 +204,19 @@ if (args.includes('readline')) {
   askUserName();
   handleLineInput();
   readFileLineByLine(FILENAME);
+}
+
+// 12. Изучение встроенного модуля stream
+if (args.includes('stream')) {
+  const INPUT_FILE = 'README.md';
+  const CURRENT_DIRECTORY = getCurrentDirectory();
+  const OUTPUT_FILE = getFullPath(CURRENT_DIRECTORY, '/module-info/stream/example.comp');
+  const HIGH_WATERMARK = 8192;
+
+  readStreamFromFile(INPUT_FILE, HIGH_WATERMARK);
+  usePipelineForReadWrite(INPUT_FILE, OUTPUT_FILE);
+  useTransformStream();
+  compressAndWriteToFile(INPUT_FILE, OUTPUT_FILE);
 }
 
 // Замена расширения файлов в указанной директории

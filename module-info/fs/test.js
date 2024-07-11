@@ -61,6 +61,7 @@ export async function writeToFile(directory, filename, content, overwrite = true
     console.error(`Error writing to file:\n${err}`);
   }
 }
+// Для записи в файл с использованием потока см. модуль stream
 
 // Чтение содержимого файла
 export async function readFileContent(directory, filename) {
@@ -74,6 +75,7 @@ export async function readFileContent(directory, filename) {
     throw err;
   }
 }
+// Для чтения файла с использованием потока см. модуль stream
 
 // Переименование файла
 export async function renameFile(oldFilePath, newFilePath) {
