@@ -147,6 +147,17 @@
    console.log(configPath); // '/path/to/current/directory/config.json'
    ```
 
+В системе ES Modules по умолчанию отсутствует доступ к переменным `__dirname` и `__filename`.
+Официальная документация Node.js предлагает следующее решение:
+
+```javascript
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+```
+
 ### Применение модуля `path`
 
 Модуль `path` используется в различных сценариях, связанных с обработкой путей файлов и директорий:

@@ -11,6 +11,7 @@ import { directoryInfo, loadInfo, memoryInfo, networkInfo, systemInfo } from './
 import { getFullPath, getCurrentDirectory } from './module-info/path/test.js';
 import { askUserName, handleLineInput, handleStandardInput, readFileLineByLine } from './module-info/readline/test.js';
 import { compressAndWriteToFile, readStreamFromFile, usePipelineForReadWrite, useTransformStream } from './module-info/stream/test.js';
+import { parseUrl, getQueryParams, formatUrl, resolveUrl, getUrlDetails } from './module-info/url/test.js';
 import { changeFileExtensions } from './experiments/change-extensions.js';
 import { config } from './env/config.js';
 
@@ -31,7 +32,8 @@ if (!args.length) {
     - os: тестирование возможностей модуля os;
     - path: тестирование возможностей модуля path.
     - readline: тестирование возможностей модуля readline.
-    - stream: тестирование возможностей модуля stream.\n`
+    - stream: тестирование возможностей модуля stream.
+    - url: тестирование возможностей модуля url.\n`
   ))
   console.log(chalk.bold('Например: node index.js events'));
 }
@@ -217,6 +219,36 @@ if (args.includes('stream')) {
   usePipelineForReadWrite(INPUT_FILE, OUTPUT_FILE);
   useTransformStream();
   compressAndWriteToFile(INPUT_FILE, OUTPUT_FILE);
+}
+
+// 12. Изучение встроенного модуля url
+if (args.includes('url')) {
+
+  const EXAMPLE_URL = 'https://example.com:8080/path/name?query=string#hash';
+  const EXAMPLE_URL_OBJECT = {
+    protocol: 'https',
+    hostname: 'example.com',
+    port: 8080,
+    pathname: '/path/name',
+    search: '?query=string',
+    hash: '#hash',
+  }
+
+  const parsedURL = parseUrl(EXAMPLE_URL);
+  console.log(chalk.blue('parsedURL: '), parsedURL);
+
+  const queryParams = getQueryParams(EXAMPLE_URL);
+  console.log(chalk.blue('queryParams: '), queryParams);
+
+  const formattedURL = formatUrl(EXAMPLE_URL_OBJECT);
+  console.log(chalk.blue('formattedURL: '), formattedURL);
+
+  const resolvedURL = resolveUrl('https://example.com/path/', 'name');
+  console.log(chalk.blue('resolvedURL: '), resolvedURL);
+
+  const URLDetails = getUrlDetails(EXAMPLE_URL);
+  console.log(chalk.blue('URLDetails: '), URLDetails);
+
 }
 
 // Замена расширения файлов в указанной директории
