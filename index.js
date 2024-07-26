@@ -1,4 +1,8 @@
 import chalk from 'chalk';
+import Application from './framework/Application.js';
+import jsonParse from './framework/parseJson.js';
+import urlParse from './framework/parseUrl.js';
+import { usersRouter } from './framework/routers/usersRouter.js';
 import { createEmptyBuffer, createBufferFromArray, createBufferFromString } from './module-info/buffer/create.js';
 import { hashData, encryptData, decryptData, generateRSAKeyPair, signData, verifySignature } from './module-info/crypto/test.js';
 import { createUDPClient, createUDPServer } from './module-info/dgram/test.js';
@@ -33,7 +37,8 @@ if (!args.length) {
     - path: тестирование возможностей модуля path.
     - readline: тестирование возможностей модуля readline.
     - stream: тестирование возможностей модуля stream.
-    - url: тестирование возможностей модуля url.\n`
+    - url: тестирование возможностей модуля url.
+    - createServer: создание http сервера\n`
   ))
   console.log(chalk.bold('Например: node index.js events'));
 }
@@ -249,6 +254,18 @@ if (args.includes('url')) {
   const URLDetails = getUrlDetails(EXAMPLE_URL);
   console.log(chalk.blue('URLDetails: '), URLDetails);
 
+}
+
+// Создание http сервера
+if (args.includes('createServer')) {
+  const PORT = config.port;
+  const HOST = config.host;
+  const app = new Application();
+
+  app.use(jsonParse);
+  app.use(urlParse(`http://${HOST}:${PORT}`));
+  app.addRouter(usersRouter);
+  app.listen(PORT, () => console.log(chalk.blue.bold(`Server started on PORT ${PORT}`)));
 }
 
 // Замена расширения файлов в указанной директории

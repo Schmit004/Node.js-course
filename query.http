@@ -1,0 +1,8 @@
+### Получение пользователей
+GET http://localhost:8080/users
+
+###
+
+### Получение постов
+GET http://localhost:8080/posts
+
