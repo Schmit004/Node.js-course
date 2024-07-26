@@ -1,5 +1,3 @@
-// WIP
-
 export default (req, res, next) => {
   let body = "";
 
